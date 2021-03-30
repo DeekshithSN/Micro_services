@@ -4,7 +4,9 @@ Developed in React.js
 
 ## Build Instruction
 ```
-npm start
+npm install
+npm run build
+node server.js
 
 ```
 *App runs on port **8080***
