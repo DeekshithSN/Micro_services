@@ -1,0 +1,36 @@
+namespace: sock-shop
+replicaCount: 1
+
+image:
+  repository: weaveworksdemos/catalogue-db:0.3.0
+
+env:
+  name1: Mysql_ROOT_PASSWORD
+  value1: faKE_password
+  name2:  MYsqL_DATABASE
+  value2: socksDB
+
+ports:
+  name: mysql
+  containerPort: 3306
+
+
+nodeSelector: 
+  beta.kubernetes.io/os: linux
+
+service:
+  type: ClusterIP
+  port: 3306
+  targetPort: 3306
+  
+ingress:
+  enabled: false
+
+autoscaling:
+  enabled: false
+  #minReplicas: 1
+  #maxReplicas: 100
+  #targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80
+
+

@@ -1,0 +1,14 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: {{ include "front-end.fullname" . }}
+  namespace: {{ .Values.namespace }}
+spec:
+  podSelector:
+    matchLabels:
+      {{- include "front-end.selectorLabels" . | nindent 6 }}
+  ingress:
+    - ports:
+        - protocol: TCP
+          port: {{ .Values.ports.containerPort }}

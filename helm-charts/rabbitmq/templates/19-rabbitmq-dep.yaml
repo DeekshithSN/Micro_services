@@ -1,0 +1,42 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "rabbitmq.fullname" . }}
+  labels:
+    {{- include "rabbitmq.labels" . | nindent 4 }}
+  namespace: {{ .Values.namespace }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "rabbitmq.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "rabbitmq.selectorLabels" . | nindent 8 }}
+      annotations:
+        prometheus.io/scrape: {{ .Values.prometheus | quote }}
+    spec:
+      containers:
+      - name: {{ .Chart.Name }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        ports:
+        - containerPort: 15672
+          name: management
+        - containerPort: 5672
+          name: rabbitmq
+        securityContext:
+          {{- toYaml .Values.securityContext | nindent 12 }}
+      - name: {{ .Values.export.name }}
+        image: {{ .Values.export.image }}
+        ports:
+        - containerPort: 9090
+          name: exporter
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+

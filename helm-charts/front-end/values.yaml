@@ -1,0 +1,57 @@
+namespace: sock-shop
+replicaCount: 1
+
+image:
+  repository: weaveworksdemos/front-end:0.3.12
+
+
+ports:
+  containerPort: 8079
+
+env:
+  name: SESSION_redis
+  value: "true"
+
+securityContext:
+  runAsNonRoot: true
+  runAsUser: 10001
+  capabilities:
+    drop:
+      - all
+  readOnlyRootFilesystem: true
+
+livenessProbe:
+  tcpSocket:
+    port: 8079
+  initialDelaySeconds: 5
+  periodSeconds: 3
+
+readinessProbe:
+  tcpSocket:
+    port: 8079
+  initialDelaySeconds: 5
+  periodSeconds: 3
+
+nodeSelector: 
+  beta.kubernetes.io/os: linux
+
+service:
+  type: NodePort
+  port: 80
+  targetPort: 8079
+  nodePort: 30001
+  
+ingress:
+  enabled: false
+
+autoscaling:
+  enabled: false
+  #minReplicas: 1
+  #maxReplicas: 100
+  #targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80
+
+annotations:
+  prometheus: true
+  
+

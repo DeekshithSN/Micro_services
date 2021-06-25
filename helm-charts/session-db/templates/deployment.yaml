@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "session-db.fullname" . }}
+  labels:
+    {{- include "session-db.labels" . | nindent 4 }}
+  namespace: {{ .Values.namespace }} 
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "session-db.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "session-db.selectorLabels" . | nindent 8 }} 
+      annotations:
+         prometheus.io.scrape: {{ .Values.annotations.prometheus.scrape | quote }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}"
+          ports:
+           - name: "{{ .Values.ports.name }}"
+             containerPort: {{ .Values.ports.containerPort }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}      
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

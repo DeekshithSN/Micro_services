@@ -1,0 +1,41 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "orders.fullname" . }}
+  labels:
+    {{- include "orders.labels" . | nindent 4 }}
+  namespace: {{ .Values.namespace }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "orders.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "orders.selectorLabels" . | nindent 8 }}
+    spec:
+      containers:
+      - name: {{ .Chart.Name }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+        env:
+         - name: {{ .Values.env.name }}
+           value: {{ .Values.env.value }}
+        ports:
+        - containerPort: 80
+        securityContext:
+          {{- toYaml .Values.securityContext | nindent 12 }}
+        volumeMounts:
+        - mountPath: {{ .Values.volume.volumeMountPath }}
+          name: {{ .Values.volume.name }}
+      volumes:
+        - name: {{ .Values.volume.name }}
+          emptyDir:
+            medium: Memory
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

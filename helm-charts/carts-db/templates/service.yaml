@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: {{ .Values.namespace }}
+  name: {{ include "carts-db.fullname" . }}
+  labels:
+    {{- include "carts-db.labels" . | nindent 4 }}
+  namespace: sock-shop
+spec:
+  type: {{ .Values.service.type }}
+  {{- with .Values.service }}
+  ports:
+  - port: {{ .port }}
+    targetPort: {{ .targetPort }}
+  {{- end }}
+  selector:
+    {{- include "carts-db.selectorLabels" . | nindent 4 }}
