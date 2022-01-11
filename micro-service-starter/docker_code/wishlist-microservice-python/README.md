@@ -8,7 +8,7 @@ pip install flask
 python index.py
 
 ```
-*App runs on port **1003***
+*App runs on port **5000***
 
 
 > Access the app from endpoint:
