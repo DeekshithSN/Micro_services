@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "shipping.fullname" . }}
+  labels:
+    {{- include "shipping.labels" . | nindent 4 }}
+  namespace: {{ .Values.namespace }} 
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "shipping.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "shipping.selectorLabels" . | nindent 8 }}  
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: {{ .Values.image.repository }}
+          
+          env: 
+          - name: {{ .Values.env.name1 }}
+            value: {{ .Values.env.value1 }}
+          - name: {{ .Values.env.name2 }}
+            value: {{ .Values.env.value2 }}
+
+          ports:
+          - containerPort: {{ .Values.ports.containerPort }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          volumeMounts:
+          - mountPath: "{{ .Values.volumeMounts.mountPath }}"
+            name: "{{ .Values.volumeMounts.name }}"  
+      volumes:
+        {{- toYaml .Values.volumes | nindent 10 }}      
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

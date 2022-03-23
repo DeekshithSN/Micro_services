@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "session-db.fullname" . }}
+  labels:
+    {{- include "session-db.labels" . | nindent 4 }}
+  namespace: {{ .Values.namespace }}
+spec:
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: {{ .Values.service.targetPort }}
+  selector:
+    {{- include "session-db.selectorLabels" . | nindent 4 }}

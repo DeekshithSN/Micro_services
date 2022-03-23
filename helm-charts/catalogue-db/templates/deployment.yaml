@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: {{ .Values.namespace }}
+  name: {{ include "catalogue-db.fullname" . }}
+  labels:
+    {{- include "catalogue-db.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+     {{- include "catalogue-db.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+       labels:
+        {{- include "catalogue-db.selectorLabels" . | nindent 8 }}
+    spec:
+      containers:
+      - name: {{ .Chart.Name }}
+        image: "{{ .Values.image.repository }}" 
+        env:
+          - name: {{ .Values.env.name1 | upper }}
+            value: {{ .Values.env.value1 | lower}}
+          - name: {{ .Values.env.name2 | upper }}
+            value: {{ .Values.env.value2 | lower}} 
+        ports:
+        - name: {{ .Values.ports.name }} 
+          containerPort: {{ .Values.ports.containerPort }} 
+       {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    

@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: {{ .Values.namespace }}
+  name: {{ include "carts-db.fullname" . }}
+  labels:
+    {{- include "carts-db.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "carts-db.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "carts-db.selectorLabels" . | nindent 8 }}
+    spec:
+      containers:
+      - name: {{ .Chart.Name }}
+        image: "{{ .Values.image.repository }}"
+        {{- with .Values.ports }}
+        ports:
+          - name: {{ .name}}
+            containerPort: {{ .containerPort}}
+        {{- end }}
+        securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+        {{- with .Values.volumeMounts }}
+        volumeMounts:
+           - mountPath: {{ .mountPath}}
+             name: {{ .name}}
+        {{- end }}
+      volumes:
+          {{- toYaml .Values.volumes | nindent 10 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

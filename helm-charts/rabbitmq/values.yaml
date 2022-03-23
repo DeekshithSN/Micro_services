@@ -1,0 +1,51 @@
+
+namespace: sock-shop
+
+replicaCount: 1
+
+prometheus: false
+
+image:
+  repository: rabbitmq
+  tag: "3.6.8-management"
+
+annotations:
+ prometheus:
+   scrape: true
+   port: 9090
+
+securityContext:
+  capabilities:
+    drop:
+      - all
+    add:
+      - CHOWN
+      - SETGID
+      - SETUID
+      - DAC_OVERRIDE
+  readOnlyRootFilesystem: true
+
+export:
+  name: rabbitmq-exporter
+  image: kbudde/rabbitmq-exporter
+
+service:
+  targetPort: 5672
+  port: 5672
+  name: rabbitmq
+
+exporter:
+  port: 9090
+  name: exporter
+  targetPort: exporter
+  type: TCP
+
+ingress:
+  enabled: false
+
+autoscaling:
+  enabled: false
+
+nodeSelector:
+  beta.kubernetes.io/os: linux
+

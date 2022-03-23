@@ -1,0 +1,28 @@
+namespace: sock-shop
+
+replicaCount: 1
+
+image:
+  repository: weaveworksdemos/queue-master
+  tag: "0.3.1"
+
+env:
+  name: JAVA_OPTS
+  value: -Xms64m -Xmx128m -XX:+UseG1GC -Djava.security.egd=file:/dev/urandom -Dspring.zipkin.enabled=false
+
+prometheus: true
+
+service:
+  type: ClusterIP
+  port: 80
+
+ingress:
+  enabled: false
+
+autoscaling:
+  enabled: false
+
+nodeSelector:
+  beta.kubernetes.io/os: linux
+
+

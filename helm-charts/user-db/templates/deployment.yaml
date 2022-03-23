@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "user-db.fullname" . }}
+  labels:
+    {{- include "user-db.labels" . | nindent 4 }}
+  namespace: {{ .Values.namespace }} 
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "user-db.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "user-db.selectorLabels" . | nindent 8 }}  
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}"
+          ports:
+           - name: {{ .Values.ports.name }}
+             containerPort: {{ .Values.ports.containerPort }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          {{- with .Values.volumeMounts }}
+          volumeMounts:
+            - mountPath: {{ .mountPath }}
+              name: {{ .name }}
+          {{- end }} 
+      volumes:
+        {{- toYaml .Values.volumes | nindent 10 }}      
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
