@@ -4,7 +4,7 @@ Wishlist Microservice is a Python and Flask app with Wishlist data.
 
 ## Build Instruction
 ```
-pip install flask flask-cors
+pip install flask flask_cors
 python index.py
 
 ```
