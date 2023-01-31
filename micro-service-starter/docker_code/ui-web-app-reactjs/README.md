@@ -13,3 +13,7 @@ npm start
 
 Open http://localhost:8080 in browser
 ##
+
+## required node version 
+
+version 8
