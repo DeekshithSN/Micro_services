@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: zuul-api-gateway
+  namespace: ui-web-app
+  labels:
+    app: zuul-api-gateway
+spec:
+  selector:
+    matchLabels:
+      app: zuul-api-gateway
+  replicas: 1
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: zuul-api-gateway
+    spec:
+      containers:
+      - name: zuul-api-gateway
+        image: umeshron05/zuul-api:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 9999
+          name: zull-api
+        affinity:
+          podAffinity:
+            requiredDuringSchedulingIgnoredDuringExecution:
+              labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                  - zuul-api-gateway
+              topologyKey: "kubernetes.io/hostname"
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: zuul-api-gateway
+  namespace: ui-web-app
+spec:
+  selector:
+    app: zuul-api-gateway
+  type: NodePort
+  ports:
+  - name: zuul-api-gateway
+    port: 9999
+    targetPort: 9999
+    nodePort: 32470
