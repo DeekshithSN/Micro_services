@@ -22,8 +22,7 @@ spec:
     spec:
       affinity:
         podAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-          - labelSelector:
+          requiredDuringSchedulingIgnoredDuringExecution
               matchExpressions:
               - key: kubernetes.io/hostname
                 operator: In
