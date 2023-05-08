@@ -22,13 +22,14 @@ spec:
     spec:
       affinity:
         podAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution
-              - matchExpressions:
-              - key: kubernetes.io/hostname
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: app
                 operator: In
                 values:
                 - ui-web-app
-            
+            topologyKey: "kubernetes.io/hostname"
       containers:
       - name: zuul-api-gateway
         image: umeshron05/zuul-api:latest
