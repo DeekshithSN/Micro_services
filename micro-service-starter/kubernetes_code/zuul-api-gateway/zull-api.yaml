@@ -20,6 +20,16 @@ spec:
       labels:
         app: zuul-api-gateway
     spec:
+      affinity:
+        podAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            labelSelector:
+              matchExpressions:
+              - key: app
+                operator: In
+                values:
+                - zuul-api-gateway
+            topologyKey: "kubernetes.io/hostname"
       containers:
       - name: zuul-api-gateway
         image: umeshron05/zuul-api:latest
@@ -27,16 +37,6 @@ spec:
         ports:
         - containerPort: 9999
           name: zull-api
-        affinity:
-          podAffinity:
-            requiredDuringSchedulingIgnoredDuringExecution:
-              labelSelector:
-                matchExpressions:
-                - key: app
-                  operator: In
-                  values:
-                  - zuul-api-gateway
-              topologyKey: "kubernetes.io/hostname"
 
 ---
 
