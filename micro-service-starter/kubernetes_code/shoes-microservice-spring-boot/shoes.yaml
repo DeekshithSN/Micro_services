@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name:  shoes
+  namespace: ui-web-app
+  labels:
+    app:  shoes  
+
+spec:
+  selector:
+    matchLabels:
+      app: shoes  
+  replicas: 1
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:      
+    metadata:
+      labels:
+        app:  shoes
+    spec:
+      containers:
+      - name:  shoes
+        image:  umeshron05/shoes:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort:  1002
+          name:  shoes
+     
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: shoes
+  namespace: shoes
+spec:
+  selector:
+    app: shoes
+  type: ClusterIP
+  ports:
+  - name: shoes
+    protocol: TCP
+    port: 1002
+    targetPort: 1002
+    
