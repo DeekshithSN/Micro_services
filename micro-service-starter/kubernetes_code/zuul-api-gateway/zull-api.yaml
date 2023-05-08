@@ -28,7 +28,7 @@ spec:
               - key: app
                 operator: In
                 values:
-                - zuul-api-gateway
+                - ui-web-app
             topologyKey: "kubernetes.io/hostname"
       containers:
       - name: zuul-api-gateway
