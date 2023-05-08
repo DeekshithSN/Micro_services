@@ -25,11 +25,11 @@ spec:
           requiredDuringSchedulingIgnoredDuringExecution:
           - labelSelector:
               matchExpressions:
-              - key: app
+              - key: kubernetes.io/hostname
                 operator: In
                 values:
                 - ui-web-app
-            topologyKey: "kubernetes.io/hostname"
+            
       containers:
       - name: zuul-api-gateway
         image: umeshron05/zuul-api:latest
