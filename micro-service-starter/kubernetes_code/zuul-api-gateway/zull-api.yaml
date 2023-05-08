@@ -23,7 +23,7 @@ spec:
       affinity:
         podAffinity:
           requiredDuringSchedulingIgnoredDuringExecution
-              matchExpressions:
+              - matchExpressions:
               - key: kubernetes.io/hostname
                 operator: In
                 values:
