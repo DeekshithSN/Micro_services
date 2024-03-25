@@ -1,0 +1,49 @@
+namespace: sock-shop
+replicaCount: 1
+
+image:
+  repository: mongo
+
+ports:
+    name: mongo
+    containerPort: 27017
+
+securityContext:
+  capabilities:
+    drop:
+      - all
+    add:
+      - CHOWN
+      - SETGID
+      - SETUID
+  readOnlyRootFilesystem: true
+
+volumeMounts:
+    mountPath: /tmp
+    name: tmp-volume
+
+volumes:
+  - name: tmp-volume
+    emptyDir:
+      medium: Memory
+
+
+service:
+  type: ClusterIP
+  port: 27017
+  targetPort: 27017
+
+ingress:
+  enabled: false
+
+autoscaling:
+  enabled: false
+#  minReplicas: 1
+ # maxReplicas: 100
+#  targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80
+
+nodeSelector: 
+  beta.kubernetes.io/os: linux
+
+

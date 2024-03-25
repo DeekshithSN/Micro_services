@@ -1,0 +1,30 @@
+---
+namespace: sock-shop 
+replicaCount: 1
+
+image:
+ repository: redis:alpine
+
+annotations:
+  prometheus :
+    scrape: false
+
+service:
+ port: 6379
+ targetPort: 6379
+
+ports:
+   name: redis
+   containerPort: 6379
+
+securityContext:
+      capabilities:
+        drop:
+         - all
+        add:
+         - CHOWN
+         - SETGID
+         - SETUID
+      readOnlyRootFilesystem: true
+nodeSelector:
+   beta.kubernetes.io/os: linux

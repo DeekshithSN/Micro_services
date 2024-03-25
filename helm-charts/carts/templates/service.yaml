@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: {{ .Values.namespace }}
+  name: {{ include "carts.fullname" . }}
+  annotations:
+        prometheus.io/scrape: {{ .Values.annotations.prometheus | quote }}
+  labels:
+    {{- include "carts.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+  - port: {{ .Values.service.port }} 
+    targetPort: {{ .Values.service.targetPort }}
+  selector:
+    {{- include "carts.selectorLabels" . | nindent 4 }}
+
